@@ -4,21 +4,37 @@
   "description": "Utils like calculator, etc.",
   "icons": [
     {
-      "src": "icons/302x203.png",
-      "sizes": "302x203",
+      "src": "icons/104x104.png",
+      "sizes": "104x104",
       "type": "image/png"
     }
   ],
     "shortcuts" : [
       {
-        "name": "Page1",
+        "name": "Page 1",
+        "short_name": "Page1",
+        "description": "List of events planned for today",
         "url": "/page1.html",
-        "description": "List of events planned for today"
+      "icons": [
+        {
+          "src": "icons/page1_96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
       },
       {
         "name": "Page 2",
+        "short_name": "Page2",
+        "description": "Page two",
         "url": "/page2.html",
-        "description": "Page two"
+      "icons": [
+        {
+          "src": "icons/page2_96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
       }
     ],
   "start_url": "index.html",
