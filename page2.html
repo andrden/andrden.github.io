@@ -1,9 +1,79 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf8">
+    <style>
+        #box {
+            display: grid;
+            width: 300px;
+            grid-template-columns:repeat(4, 1fr);
+            grid-gap: 1vw;
+            padding: 8px;
+            background: linear-gradient(#4aaf85, #3fa8af);
+        }
+
+        #box > div {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .keys {
+            justify-content: center;
+            font-weight: bolder;
+            cursor: pointer;
+            border: 2px solid black;
+        }
+
+        .keys:hover {
+            background: #91efc1;
+        }
+
+        #disp {
+            grid-column-start: 2;
+            grid-column-end: 5;
+            justify-content: flex-end;
+            background: black;
+            color: white;
+        }
+    </style>
+    <title>Calculator</title>
 </head>
 <body>
-page 2
+Calculator
+<script>
+    let keys = ['C', '', 7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', 0, '.', '=', '/', '**'],
+        html = '<div id="box">',
+        memory = '';
+    for (let k in keys) {
+        if (keys[k] === '') {
+            html += `<div id="disp">${keys[k]}</div>`;
+            continue;
+        }
+        html += `<div class="keys">${keys[k]}</div>`;
+    }
+    html += '</div>';
+    document.body.innerHTML = html;
+    document.onclick = function (e) {
+        let c = e.target.innerText,
+            disp = document.getElementById('disp');
+        if (c >= 0 || c === '.') {
+            if (disp.innerText == 0) {
+                disp.innerText = c;
+            } else {
+                disp.innerText += c;
+            }
+            memory += c;
+        } else if (c === 'C') {
+            memory = '';
+            disp.innerText = 0;
+        } else if (c === '=') {
+            memory = disp.innerText = eval(memory);
+        } else {
+            memory += c;
+            disp.innerText = ''
+        }
+    }
+</script>
 </body>
 </html>

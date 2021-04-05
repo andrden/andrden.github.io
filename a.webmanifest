@@ -34,9 +34,9 @@
       ]
       },
       {
-        "name": "Page 2",
-        "short_name": "Page2",
-        "description": "Page two",
+        "name": "Calculator",
+        "short_name": "Calc",
+        "description": "Simple calculator",
         "url": "/page2.html",
       "icons": [
         {
