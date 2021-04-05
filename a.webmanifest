@@ -1,0 +1,33 @@
+{
+  "name": "Utilities",
+  "short_name": "Utils",
+  "description": "Utils like calculator, etc.",
+  "icons": [
+    {
+      "src": "icons/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+    "shortcuts" : [
+      {
+        "name": "Page1",
+        "url": "/page1.html",
+        "description": "List of events planned for today"
+      },
+      {
+        "name": "Page 2",
+        "url": "/page2.html",
+        "description": "Page two"
+      }
+    ],
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "theme_color": "#B12A34",
+  "background_color": "#B12A34"
+}
