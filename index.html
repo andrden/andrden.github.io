@@ -1,8 +1,15 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf8">
+    <meta name="theme-color" content="#317EFB"/>
     <link rel="manifest" href="a.webmanifest">
+    <title>Utils pages</title>
+    <script>
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
 </head>
 <body>
 

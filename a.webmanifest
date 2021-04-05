@@ -12,6 +12,11 @@
       "src": "icons/144x144.png",
       "sizes": "144x144",
       "type": "image/png"
+    },
+    {
+      "src": "icons/512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
     "shortcuts" : [
@@ -44,6 +49,6 @@
     ],
   "start_url": "index.html",
   "display": "fullscreen",
-  "theme_color": "#B12A34",
-  "background_color": "#B12A34"
+  "theme_color": "#317EFB",
+  "background_color": "#317EFB"
 }
