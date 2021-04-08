@@ -1,4 +1,4 @@
-const cacheName = 'sw-cache-v2';
+const cacheName = 'sw-cache-v3';
 const appShellFiles = [
     '/index.html',
     '/icons/512x512.png'
