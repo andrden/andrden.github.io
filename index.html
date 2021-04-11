@@ -6,8 +6,14 @@
     <link rel="manifest" href="a.webmanifest">
     <title>Utils pages</title>
     <script>
-        if('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
+        }
+
+        async function startNotifications() {
+            await Notification.requestPermission();
+            let num = 1;
+            setInterval(() => navigator.serviceWorker.ready.then(reg => reg.showNotification("Wake up !!! num=" + num++)), 10_000)
         }
     </script>
 </head>
@@ -19,5 +25,7 @@ HelloHello <img src=https://code-maven.com/img/angularjs.png style='transform: r
 
 <br/>
 <a href="page2.html">Calculator</a>
+
+<button onclick="startNotifications()">Show notifications</button>
 </body>
 </html>
