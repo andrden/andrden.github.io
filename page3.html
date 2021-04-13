@@ -32,7 +32,7 @@
                 .ref("Registration/aaa")
                 .set({
                     name: name + Date.now(),
-                    user: username,
+                    user: document.getElementById('user').value,
                     msg: document.getElementById('txtIn').value,
                     gender: gender,
                 });
@@ -47,7 +47,7 @@
                     console.log(snapshot.val().user);
                     console.log(snapshot.val().gender);
                     console.log(snapshot.val().msg);
-                    document.getElementById('txtOut').innerText = snapshot.val().msg;
+                    document.getElementById('txtOut').innerText += '\nFrom ' + snapshot.val().user + ": " + snapshot.val().msg;
                 });
         };
 
@@ -56,6 +56,8 @@
 </head>
 <body>
 page 3
+<label for="user">Choose a user name:</label><input id="user"/>
+<br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 <button onclick="writeToDatabase('sdf','s1','m')">Write (everyone will see this message)</button>
 <br/>
@@ -64,6 +66,6 @@ page 3
 <br/>
 <br/>
 From server:
-<div id="txtOut" style="width: 100%; border: 2px dotted blue">...message...</div>
+<pre id="txtOut" style="width: 100%; border: 2px dotted blue">...message...</pre>
 </body>
 </html>
