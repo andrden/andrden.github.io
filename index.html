@@ -13,18 +13,18 @@
         Parse.initialize("888gxSaA8Wd8InMv7HvBSadQX1SL15aGNJdJi8Vx", "wKJP6u0YgD7OyI0ykCloBTiY8odgsHbJ0tSMCoPh"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
         Parse.serverURL = "https://parseapi.back4app.com/";
 
-        signUp = function(){
+        signUp = function () {
             var user = new Parse.User();
             user.save({
-                username:"u1",
-                email:'u1@u.com',
+                username: "u1",
+                email: 'u1@u.com',
                 password: '1',
                 // username: document.getElementById("username").value,
                 // email: document.getElementById("email").value,
                 // password: document.getElementById("password").value
-            }).then(function(response) {
-                alert('New object create with success! ObjectId: ' + response.id + ', '+ user.get('username'));
-            }).catch(function(error) {
+            }).then(function (response) {
+                alert('New object create with success! ObjectId: ' + response.id + ', ' + user.get('username'));
+            }).catch(function (error) {
                 alert('Error: ' + error.message);
             });
         }
@@ -33,6 +33,24 @@
             await Notification.requestPermission();
             let num = 1;
             setInterval(() => navigator.serviceWorker.ready.then(reg => reg.showNotification("Wake up !!! num=" + num++)), 10_000)
+        }
+
+        function saveVehicle() {
+            const B4aVehicle = Parse.Object.extend('B4aVehicle');
+            const vehicle = new B4aVehicle();
+
+            vehicle.set('name', 'Corolla');
+            vehicle.set('price', 19499);
+            vehicle.set('color', 'black');
+
+            vehicle.save().then(savedObject => {
+                    // The class is automatically created on
+                    // the back-end when saving the object!
+                    console.log(savedObject);
+                },
+                error => {
+                    console.error(error);
+                });
         }
     </script>
 </head>
@@ -47,6 +65,6 @@ HelloHello <img src=https://code-maven.com/img/angularjs.png style='transform: r
 
 <button onclick="startNotifications()">Show notifications</button>
 
-<button onclick="signUp()">back4app save</button>
+<button onclick="saveVehicle()">back4app saveV</button>
 </body>
 </html>
