@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf8">
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBzdDMv71fEwZzAZW6ATevAT9TWMbRveZg",
+            authDomain: "app1-cfe36.firebaseapp.com",
+            databaseURL: "https://app1-cfe36-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "app1-cfe36",
+            storageBucket: "app1-cfe36.appspot.com",
+            messagingSenderId: "1062099327891",
+            appId: "1:1062099327891:web:582571408d3e4ed463a666"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const writeToDatabase = (name, username, gender) => {
+            firebase
+                .database()
+                .ref("Registration/" + Date.now())
+                .set({
+                    name: name,
+                    user: username,
+                    gender: gender,
+                });
+        };
+
+    </script>
+</head>
+<body>
+page 3
+<button onclick="writeToDatabase('sdf','s1','m')">write</button>
+</body>
+</html>
