@@ -5,9 +5,28 @@
     <meta name="theme-color" content="#317EFB"/>
     <link rel="manifest" href="a.webmanifest">
     <title>Utils pages</title>
+    <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
+        }
+        Parse.initialize("888gxSaA8Wd8InMv7HvBSadQX1SL15aGNJdJi8Vx", "wKJP6u0YgD7OyI0ykCloBTiY8odgsHbJ0tSMCoPh"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+        Parse.serverURL = "https://parseapi.back4app.com/";
+
+        signUp = function(){
+            var user = new Parse.User();
+            user.save({
+                username:"u1",
+                email:'u1@u.com',
+                password: '1',
+                // username: document.getElementById("username").value,
+                // email: document.getElementById("email").value,
+                // password: document.getElementById("password").value
+            }).then(function(response) {
+                alert('New object create with success! ObjectId: ' + response.id + ', '+ user.get('username'));
+            }).catch(function(error) {
+                alert('Error: ' + error.message);
+            });
         }
 
         async function startNotifications() {
@@ -27,5 +46,7 @@ HelloHello <img src=https://code-maven.com/img/angularjs.png style='transform: r
 <a href="page2.html">Calculator</a>
 
 <button onclick="startNotifications()">Show notifications</button>
+
+<button onclick="signUp()">back4app save</button>
 </body>
 </html>
