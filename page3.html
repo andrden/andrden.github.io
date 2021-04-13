@@ -37,6 +37,18 @@
                 });
         };
 
+        const readFromDatabaseOn = (id) => {
+            firebase
+                .database()
+                .ref(id)
+                .on("value", function (snapshot) {
+                    console.log(snapshot.val().name);
+                    console.log(snapshot.val().user);
+                    console.log(snapshot.val().gender);
+                });
+        };
+
+        readFromDatabaseOn("Registration/aaa")
     </script>
 </head>
 <body>
