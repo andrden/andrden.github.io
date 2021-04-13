@@ -10,6 +10,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
 
     <script>
+        // https://www.naishare.com/blog/getting-started-with-firebase-realtime-database-on-the-web
+
         // Your web app's Firebase configuration
         var firebaseConfig = {
             apiKey: "AIzaSyBzdDMv71fEwZzAZW6ATevAT9TWMbRveZg",
@@ -26,9 +28,10 @@
         const writeToDatabase = (name, username, gender) => {
             firebase
                 .database()
-                .ref("Registration/" + Date.now())
+                //.ref("Registration/" + Date.now())
+                .ref("Registration/aaa")
                 .set({
-                    name: name,
+                    name: name + Date.now(),
                     user: username,
                     gender: gender,
                 });
