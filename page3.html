@@ -49,21 +49,6 @@
 
         readFromDatabaseOn()
         let mediaRecorder;
-
-        async function startRecording() {
-            let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.addEventListener('dataavailable', (e) => {
-                console.log('mediaRecorder dataavailable ', e)
-                firebase.database().ref("Registration/aaa").set({
-                    name: 't ' + Date.now(),
-                    user: document.getElementById('user').value,
-                    aud: e.data,
-                });
-            })
-            mediaRecorder.start()
-        }
-
     </script>
 </head>
 <body>
@@ -72,7 +57,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span style="border: 2px solid darkred" onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</span>
+<span id="recordSpan" style="border: 2px solid blue" onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -81,5 +66,24 @@ or
 <br/>
 From server:
 <pre id="txtOut" style="width: 100%; border: 2px dotted blue">...message...</pre>
+
+<script>
+    document.getElementById('recordSpan').addEventListener('mousedown', async (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+        console.log('stream', stream)
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.addEventListener('dataavailable', (e) => {
+            console.log('mediaRecorder dataavailable ', e)
+            firebase.database().ref("Registration/aaa").set({
+                name: 't ' + Date.now(),
+                user: document.getElementById('user').value,
+                aud: e.data,
+            });
+        })
+        mediaRecorder.start()
+    })
+</script>
 </body>
 </html>
