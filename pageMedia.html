@@ -1,0 +1,4 @@
+<div id="d1"></div>
+<script>
+    navigator.mediaDevices.enumerateDevices().then(v => document.getElementById('d1').innerText = JSON.stringify(v));
+</script>
