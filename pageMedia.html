@@ -6,20 +6,22 @@
 <a id="download">Download</a>
 <button id="stop">Stop</button>
 <script>
-    let shouldStop = false;
-    let stopped = false;
+    // let shouldStop = false;
+    // let stopped = false;
     const downloadLink = document.getElementById('download');
     const stopButton = document.getElementById('stop');
+    let mediaRecorder;
 
     stopButton.addEventListener('click', function() {
-        shouldStop = true;
+        //shouldStop = true;
+        mediaRecorder.stop()
     });
 
     const handleSuccess = function(stream) {
         console.log('handleSuccess', stream)
         const options = {mimeType: 'audio/webm'};
         const recordedChunks = [];
-        const mediaRecorder = new MediaRecorder(stream, options);
+        mediaRecorder = new MediaRecorder(stream, options);
 
         mediaRecorder.addEventListener('dataavailable', function(e) {
             console.log('mediaRecorder dataavailable ',e)
@@ -27,10 +29,10 @@
                 recordedChunks.push(e.data);
             }
 
-            if(shouldStop === true && stopped === false) {
-                mediaRecorder.stop();
-                stopped = true;
-            }
+            // if(shouldStop === true && stopped === false) {
+            //     mediaRecorder.stop();
+            //     stopped = true;
+            // }
         });
 
         mediaRecorder.addEventListener('stop', function() {
