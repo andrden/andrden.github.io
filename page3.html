@@ -25,23 +25,19 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        const writeToDatabase = (name, username, gender) => {
-            firebase
-                .database()
-                //.ref("Registration/" + Date.now())
-                .ref("Registration/aaa")
-                .set({
-                    name: name + Date.now(),
-                    user: document.getElementById('user').value,
-                    msg: document.getElementById('txtIn').value,
-                    gender: gender,
-                });
+        const writeToDatabase = () => {
+            let txtIn = document.getElementById('txtIn')
+            let txt = txtIn.value
+            txtIn.value = ''
+            firebase.database().ref("Registration/aaa").set({
+                name: 't ' + Date.now(),
+                user: document.getElementById('user').value,
+                msg: txt,
+            });
         };
 
-        const readFromDatabaseOn = (id) => {
-            firebase
-                .database()
-                .ref(id)
+        function readFromDatabaseOn() {
+            firebase.database().ref("Registration/aaa")
                 .on("value", function (snapshot) {
                     console.log(snapshot.val().name);
                     console.log(snapshot.val().user);
@@ -49,9 +45,25 @@
                     console.log(snapshot.val().msg);
                     document.getElementById('txtOut').innerText += '\nFrom ' + snapshot.val().user + ": " + snapshot.val().msg;
                 });
-        };
+        }
 
-        readFromDatabaseOn("Registration/aaa")
+        readFromDatabaseOn()
+        let mediaRecorder;
+
+        async function startRecording() {
+            let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.addEventListener('dataavailable', (e) => {
+                console.log('mediaRecorder dataavailable ', e)
+                firebase.database().ref("Registration/aaa").set({
+                    name: 't ' + Date.now(),
+                    user: document.getElementById('user').value,
+                    aud: e.data,
+                });
+            })
+            mediaRecorder.start()
+        }
+
     </script>
 </head>
 <body>
@@ -59,7 +71,9 @@
 <label for="user">Choose a user name:</label><input id="user"/>
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
-<button onclick="writeToDatabase('sdf','s1','m')">Write (everyone will see this message)</button>
+or
+<button onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</button>
+<button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
 <br/>
