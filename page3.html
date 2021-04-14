@@ -57,7 +57,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 2px solid blue" onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</span>
+<span id="recordSpan" style="border: 3px solid brown" onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -68,7 +68,7 @@ From server:
 <pre id="txtOut" style="width: 100%; border: 2px dotted blue">...message...</pre>
 
 <script>
-    document.getElementById('recordSpan').addEventListener('mousedown', async (e) => {
+    async function startRecording(e){
         e.stopPropagation()
         e.preventDefault()
         let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
@@ -83,6 +83,15 @@ From server:
             });
         })
         mediaRecorder.start()
+    }
+
+    document.getElementById('recordSpan').addEventListener('mousedown', (e) => {
+        console.log('mousedown')
+        startRecording(e)
+    })
+    document.getElementById('recordSpan').addEventListener('touchstart', (e) => {
+        console.log('touchstart')
+        startRecording(e)
     })
 </script>
 </body>
