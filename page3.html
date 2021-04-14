@@ -43,6 +43,7 @@
                     console.log(snapshot.val().user);
                     console.log(snapshot.val().gender);
                     console.log(snapshot.val().msg);
+                    console.log('aud', snapshot.val().aud);
                     document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t)
                         + ' From ' + snapshot.val().user + ": " + snapshot.val().msg;
                 });
@@ -58,7 +59,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 3px solid greenyellow">Record</span>
+<span id="recordSpan" style="border: 3px solid blue">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -81,7 +82,7 @@ From server:
             firebase.database().ref("Registration/aaa").set({
                 t: Date.now(),
                 user: document.getElementById('user').value,
-                aud: arrayBuffer,
+                aud: new Uint8Array(arrayBuffer),
             });
         })
         mediaRecorder.start()
