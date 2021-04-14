@@ -64,7 +64,8 @@
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
-or <span id="recordSpan" style="border: 3px solid green">Record</span> <span id="recordStatus"></span>
+or <select id="mikeSelect"></select> <span id="recordSpan" style="border: 3px solid green">Record</span> <span
+        id="recordStatus"></span>
 <br/>
 <br/>
 <br/>
@@ -74,10 +75,34 @@ From server:
 
 <script>
     let recordStatus = document.getElementById('recordStatus')
+    let mikeSelect = document.getElementById('mikeSelect')
+    let mikes;
+
+    async function findMikes() {
+        mikes = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
+        for (let i = 0; i < mikes.length; i++) {
+            const op = document.createElement('option')
+            op.text = 'Microphone #' + i
+            mikeSelect.append(op)
+        }
+    }
+
+    findMikes();
+
 
     async function startRecording(e) {
         try {
-            let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+            // let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+            if (mikeSelect.selectedIndex < 0) {
+                alert('Please first select a microphone in the drop down list')
+                return;
+            }
+            let stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    groupId: {exact: mikes[mikeSelect.selectedIndex].deviceId},
+                    deviceId: {exact: mikes[mikeSelect.selectedIndex].groupId},
+                }, video: false
+            });
             console.log('stream', stream)
             mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
             mediaRecorder.addEventListener('dataavailable', async (e) => {
