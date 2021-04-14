@@ -74,6 +74,7 @@ From server:
 
 <script>
     let recordStatus = document.getElementById('recordStatus')
+
     async function startRecording(e) {
         try {
             let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
@@ -89,7 +90,7 @@ From server:
                 });
             })
             mediaRecorder.start()
-            recordStatus.innerText='Recording...'
+            recordStatus.innerText = 'Recording...'
         } catch (e) {
             console.error(e);
             alert('Sorry, cannot record audio! ' + e);
@@ -103,7 +104,7 @@ From server:
     document.getElementById('recordSpan').addEventListener('pointerup', (e) => {
         console.log('pointerup')
         mediaRecorder.stop()
-        recordStatus.innerText='Ended recording.'
+        recordStatus.innerText = 'Ended recording.'
     })
     // document.getElementById('recordSpan').addEventListener('touchstart', (e) => {
     //     console.log('touchstart')
