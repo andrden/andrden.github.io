@@ -91,17 +91,17 @@ From server:
 
 
     async function startRecording(e) {
+        let audioConstaints = {};
         try {
             // let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
             if (mikeSelect.selectedIndex < 0) {
                 alert('Please first select a microphone in the drop down list')
                 return;
             }
+            if (mikes[mikeSelect.selectedIndex].deviceId) audioConstaints.deviceId = {exact: mikes[mikeSelect.selectedIndex].deviceId};
+            if (mikes[mikeSelect.selectedIndex].groupId) audioConstaints.groupId = {exact: mikes[mikeSelect.selectedIndex].groupId};
             let stream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    groupId: {exact: mikes[mikeSelect.selectedIndex].deviceId},
-                    deviceId: {exact: mikes[mikeSelect.selectedIndex].groupId},
-                }, video: false
+                audio: audioConstaints, video: false
             });
             console.log('stream', stream)
             mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
@@ -118,7 +118,7 @@ From server:
             recordStatus.innerText = 'Recording...'
         } catch (e) {
             console.error(e);
-            alert('Sorry, cannot record audio! ' + e);
+            alert('Sorry, cannot record audio! ' + JSON.stringify(audioConstaints) + " " + e);
         }
     }
 
