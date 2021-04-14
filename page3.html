@@ -30,7 +30,7 @@
             let txt = txtIn.value
             txtIn.value = ''
             firebase.database().ref("Registration/aaa").set({
-                name: 't ' + Date.now(),
+                t: Date.now(),
                 user: document.getElementById('user').value,
                 msg: txt,
             });
@@ -43,7 +43,8 @@
                     console.log(snapshot.val().user);
                     console.log(snapshot.val().gender);
                     console.log(snapshot.val().msg);
-                    document.getElementById('txtOut').innerText += '\nFrom ' + snapshot.val().user + ": " + snapshot.val().msg;
+                    document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t)
+                        + ' From ' + snapshot.val().user + ": " + snapshot.val().msg;
                 });
         }
 
@@ -57,7 +58,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 3px solid violet" >Record</span>
+<span id="recordSpan" style="border: 3px solid greenyellow">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -68,18 +69,19 @@ From server:
 <pre id="txtOut" style="width: 100%; border: 2px dotted blue">...message...</pre>
 
 <script>
-    async function startRecording(e){
+    async function startRecording(e) {
         e.stopPropagation()
         e.preventDefault()
         let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
         console.log('stream', stream)
         mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.addEventListener('dataavailable', (e) => {
+        mediaRecorder.addEventListener('dataavailable', async (e) => {
             console.log('mediaRecorder dataavailable ', e)
+            let arrayBuffer = await e.data.arrayBuffer();
             firebase.database().ref("Registration/aaa").set({
-                name: 't ' + Date.now(),
+                t: Date.now(),
                 user: document.getElementById('user').value,
-                aud: e.data,
+                aud: arrayBuffer,
             });
         })
         mediaRecorder.start()
