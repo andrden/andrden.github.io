@@ -45,9 +45,9 @@
                     console.log(snapshot.val().msg);
                     const aud = snapshot.val().aud;
                     console.log('aud', aud);
-                    document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t).toTimeString()
+                    document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t).toUTCString()
                         + ' From ' + snapshot.val().user + ": " + (aud ? ' audio bytes=' + aud.length : snapshot.val().msg);
-                    if(aud) {
+                    if (aud) {
                         new Audio(URL.createObjectURL(new Blob([new Uint8Array(aud)], {type: 'audio/webm'}))).play()
                     }
                 });
@@ -63,7 +63,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 3px solid red">Record</span>
+<span id="recordSpan" style="border: 3px solid green">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -75,21 +75,23 @@ From server:
 
 <script>
     async function startRecording(e) {
-        e.stopPropagation()
-        e.preventDefault()
-        let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
-        console.log('stream', stream)
-        mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
-        mediaRecorder.addEventListener('dataavailable', async (e) => {
-            console.log('mediaRecorder dataavailable ', e)
-            let arrayBuffer = await e.data.arrayBuffer();
-            firebase.database().ref("Registration/aaa").set({
-                t: Date.now(),
-                user: document.getElementById('user').value,
-                aud: new Uint8Array(arrayBuffer),
-            });
-        })
-        mediaRecorder.start()
+        try {
+            let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+            console.log('stream', stream)
+            mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
+            mediaRecorder.addEventListener('dataavailable', async (e) => {
+                console.log('mediaRecorder dataavailable ', e)
+                let arrayBuffer = await e.data.arrayBuffer();
+                firebase.database().ref("Registration/aaa").set({
+                    t: Date.now(),
+                    user: document.getElementById('user').value,
+                    aud: new Uint8Array(arrayBuffer),
+                });
+            })
+            mediaRecorder.start()
+        } catch (e) {
+            alert('Sorry, cannot record audio! ' + e);
+        }
     }
 
     document.getElementById('recordSpan').addEventListener('pointerdown', (e) => {
