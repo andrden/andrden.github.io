@@ -83,7 +83,7 @@ From server:
         mikes = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
         for (let i = 0; i < mikes.length; i++) {
             const op = document.createElement('option')
-            op.text = 'Microphone #' + i
+            op.text = 'Microphone #' + i + " " + (mikes[i].deviceId.length < 15 ? mikes[i].deviceId + ' ' : '') + mikes[i].label
             mikeSelect.append(op)
         }
     }
