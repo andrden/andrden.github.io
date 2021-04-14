@@ -51,13 +51,13 @@
         let mediaRecorder;
     </script>
 </head>
-<body>
+<body style="user-select: none;">
 <h1>Page 3 - simple chat using Firebase realtime DB server</h1>
 <label for="user">Choose a user name:</label><input id="user"/>
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 3px solid brown" onmousedown="startRecording()" onmouseup="mediaRecorder.stop()">Record</span>
+<span id="recordSpan" style="border: 3px solid violet" >Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -85,14 +85,18 @@ From server:
         mediaRecorder.start()
     }
 
-    document.getElementById('recordSpan').addEventListener('mousedown', (e) => {
-        console.log('mousedown')
+    document.getElementById('recordSpan').addEventListener('pointerdown', (e) => {
+        console.log('pointerdown')
         startRecording(e)
     })
-    document.getElementById('recordSpan').addEventListener('touchstart', (e) => {
-        console.log('touchstart')
-        startRecording(e)
+    document.getElementById('recordSpan').addEventListener('pointerup', (e) => {
+        console.log('pointerup')
+        mediaRecorder.stop()
     })
+    // document.getElementById('recordSpan').addEventListener('touchstart', (e) => {
+    //     console.log('touchstart')
+    //     startRecording(e)
+    // })
 </script>
 </body>
 </html>
