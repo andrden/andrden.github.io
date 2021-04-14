@@ -43,9 +43,13 @@
                     console.log(snapshot.val().user);
                     console.log(snapshot.val().gender);
                     console.log(snapshot.val().msg);
-                    console.log('aud', snapshot.val().aud);
-                    document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t)
-                        + ' From ' + snapshot.val().user + ": " + snapshot.val().msg;
+                    const aud = snapshot.val().aud;
+                    console.log('aud', aud);
+                    document.getElementById('txtOut').innerText += '\n' + new Date(snapshot.val().t).toTimeString()
+                        + ' From ' + snapshot.val().user + ": " + (aud ? ' audio bytes=' + aud.length : snapshot.val().msg);
+                    if(aud) {
+                        new Audio(URL.createObjectURL(new Blob([new Uint8Array(aud)], {type: 'audio/webm'}))).play()
+                    }
                 });
         }
 
@@ -59,7 +63,7 @@
 <br/>
 <label for="txtIn">Input message:</label><input id="txtIn"/>
 or
-<span id="recordSpan" style="border: 3px solid blue">Record</span>
+<span id="recordSpan" style="border: 3px solid red">Record</span>
 <button onclick="writeToDatabase()">Write (everyone will see this message)</button>
 <br/>
 <br/>
@@ -75,7 +79,7 @@ From server:
         e.preventDefault()
         let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
         console.log('stream', stream)
-        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
         mediaRecorder.addEventListener('dataavailable', async (e) => {
             console.log('mediaRecorder dataavailable ', e)
             let arrayBuffer = await e.data.arrayBuffer();
