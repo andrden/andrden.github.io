@@ -54,7 +54,6 @@
         }
 
         readFromDatabaseOn()
-        let mediaRecorder;
     </script>
 </head>
 <body style="user-select: none;">
@@ -77,6 +76,8 @@ From server:
     let recordStatus = document.getElementById('recordStatus')
     let mikeSelect = document.getElementById('mikeSelect')
     let mikes;
+    let stream;
+    let mediaRecorder;
 
     async function findMikes() {
         mikes = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
@@ -100,7 +101,7 @@ From server:
             }
             if (mikes[mikeSelect.selectedIndex].deviceId) audioConstaints.deviceId = {exact: mikes[mikeSelect.selectedIndex].deviceId};
             if (mikes[mikeSelect.selectedIndex].groupId) audioConstaints.groupId = {exact: mikes[mikeSelect.selectedIndex].groupId};
-            let stream = await navigator.mediaDevices.getUserMedia({
+            stream = await navigator.mediaDevices.getUserMedia({
                 audio: audioConstaints, video: false
             });
             console.log('stream', stream)
@@ -128,8 +129,23 @@ From server:
     })
     document.getElementById('recordSpan').addEventListener('pointerup', (e) => {
         console.log('pointerup')
-        mediaRecorder.stop()
-        recordStatus.innerText = 'Ended recording.'
+        if (mediaRecorder) {
+            mediaRecorder.stop()
+            mediaRecorder = undefined
+            stream.getTracks().forEach(t => t.stop());
+            stream = undefined;
+            recordStatus.innerText = 'Ended recording.'
+        }
+    })
+    document.getElementById('recordSpan').addEventListener('pointercancel', (e) => {
+        console.log('pointerup')
+        if (mediaRecorder) {
+            mediaRecorder.stop()
+            mediaRecorder = undefined
+            stream.getTracks().forEach(t => t.stop());
+            stream = undefined;
+            recordStatus.innerText = 'Ended recording!'
+        }
     })
 </script>
 </body>
