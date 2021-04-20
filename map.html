@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>Add Map</title>
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            const rusov = {lat: 50.3880789, lng: 30.6269396};
+            const map = new google.maps.Map(document.getElementById("map"), {
+                mapTypeId: 'hybrid',
+                gestureHandling: "greedy",
+                zoom: 18,
+                center: rusov,
+            });
+            map.setTilt(0);
+            // map.setTilt(45);
+            const marker = new google.maps.Marker({
+                position: rusov,
+                map: map,
+            });
+        }
+    </script>
+</head>
+<body>
+<h3>My Google Maps Demo</h3>
+<!--The div element for the map -->
+<div id="map" style="width: 100%; height: 400px;"></div>
+
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU-EvdHw1jlwT0dJblJCtdXYy_S8Gzq88&callback=initMap&libraries=&v=weekly"
+        async></script>
+</body>
+</html>
+
+
