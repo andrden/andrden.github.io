@@ -59,9 +59,11 @@
 </head>
 <body>
 <button onclick="watchMyLocation()">Watch my location</button>
-<h3 id="txt">My Google Maps Demo2</h3>
+<h3 id="txt">My Google Maps Demo3</h3>
 <!--The div element for the map -->
-<div id="map" style="mix-blend-mode: multiply; width: 100%; height: 400px;"></div>
+<div style="filter: brightness(3)">
+    <div id="map" style="width: 100%; height: 400px;"></div>
+</div>
 
 <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU-EvdHw1jlwT0dJblJCtdXYy_S8Gzq88&callback=initMap&libraries=&v=weekly"
