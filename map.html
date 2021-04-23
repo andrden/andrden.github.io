@@ -7,6 +7,7 @@
     <script>
         let map;
         let resp = 0;
+        let errs = 0;
         const coordsSet = new Set();
 
         function initMap() {
@@ -26,28 +27,31 @@
             //new google.maps.Marker({position: {lat: 50.3880789, lng: 30.6259396}, map});
         }
 
-        function addMyLocation(old) {
-            navigator.geolocation.getCurrentPosition((p) => {
+        function watchMyLocation() {
+            navigator.geolocation.watchPosition((p) => {
                 console.log('getCurrentPosition', p);
                 resp++;
                 coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
-                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size}`;
+                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
                 new google.maps.Marker({
                     position: {
                         lat: p.coords.latitude,
                         lng: p.coords.longitude
                     }, map
                 });
-            }, (e) => console.log('getCurrentPosition error', e), {
+            }, (e) => {
+                errs++;
+                console.log('getCurrentPosition error', e);
+            }, {
                 enableHighAccuracy: true,
-                maximumAge: old ? Infinity : 0
+                maximumAge: 0,
+                //maximumAge: old ? Infinity : 0
             });
         }
     </script>
 </head>
 <body>
-<button onclick="addMyLocation(true)">Add my location (cache)</button>
-<button onclick="addMyLocation(false)">Add my location (fresh)</button>
+<button onclick="watchMyLocation()">Watch my location</button>
 <h3 id="txt">My Google Maps Demo</h3>
 <!--The div element for the map -->
 <div id="map" style="width: 100%; height: 400px;"></div>
@@ -57,5 +61,3 @@
         async></script>
 </body>
 </html>
-
-
