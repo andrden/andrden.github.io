@@ -4,7 +4,9 @@
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <title>Add Map</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+          type="text/css">
     <style>
         .map {
             height: 400px;
@@ -22,6 +24,10 @@
             navigator.geolocation.watchPosition((p) => {
                 console.log('getCurrentPosition', p);
                 resp++;
+                if (resp % 20 === 0) {
+                    let utterance = new SpeechSynthesisUtterance("" + resp);
+                    speechSynthesis.speak(utterance);
+                }
                 coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
                 document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
                 var layer = new ol.layer.Vector({
@@ -47,7 +53,7 @@
 </head>
 <body>
 <button onclick="watchMyLocation()">Watch my location</button>
-<h3 id="txt">My openlayers Maps</h3>
+<h3 id="txt">My openlayers Maps - talking</h3>
 <div id="map" class="map"></div>
 <script type="text/javascript">
     //const rusov = {lat: 50.3880789, lng: 30.6269396};
