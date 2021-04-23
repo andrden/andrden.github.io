@@ -15,7 +15,7 @@
             map = new google.maps.Map(document.getElementById("map"), {
                 //mapTypeId: 'hybrid',
                 gestureHandling: "greedy",
-                zoom: 16,
+                zoom: 17,
                 center: rusov,
             });
             map.setTilt(0);
@@ -34,6 +34,13 @@
                 coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
                 document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
                 new google.maps.Marker({
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 3,
+                        fillColor: "#F00",
+                        fillOpacity: 0.4,
+                        strokeWeight: 0.4
+                    },
                     position: {
                         lat: p.coords.latitude,
                         lng: p.coords.longitude
@@ -54,7 +61,7 @@
 <button onclick="watchMyLocation()">Watch my location</button>
 <h3 id="txt">My Google Maps Demo</h3>
 <!--The div element for the map -->
-<div id="map" style="width: 100%; height: 400px;"></div>
+<div id="map" style="mix-blend-mode: multiply; filter: contrast(2); width: 100%; height: 400px;"></div>
 
 <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU-EvdHw1jlwT0dJblJCtdXYy_S8Gzq88&callback=initMap&libraries=&v=weekly"
