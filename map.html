@@ -12,58 +12,38 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-<!--    <script>-->
-<!--        let map;-->
-<!--        let resp = 0;-->
-<!--        let errs = 0;-->
-<!--        const coordsSet = new Set();-->
+    <script>
+        let map;
+        let resp = 0;
+        let errs = 0;
+        const coordsSet = new Set();
 
-<!--        function initMap() {-->
-<!--            const rusov = {lat: 50.3880789, lng: 30.6269396};-->
-<!--            map = new google.maps.Map(document.getElementById("map"), {-->
-<!--                //mapTypeId: 'hybrid',-->
-<!--                gestureHandling: "greedy",-->
-<!--                zoom: 17,-->
-<!--                center: rusov,-->
-<!--            });-->
-<!--            map.setTilt(0);-->
-<!--            // map.setTilt(45);-->
-<!--            // const marker = new google.maps.Marker({-->
-<!--            //     position: rusov,-->
-<!--            //     map: map,-->
-<!--            // });-->
-<!--            //new google.maps.Marker({position: {lat: 50.3880789, lng: 30.6259396}, map});-->
-<!--        }-->
-
-<!--        function watchMyLocation() {-->
-<!--            navigator.geolocation.watchPosition((p) => {-->
-<!--                console.log('getCurrentPosition', p);-->
-<!--                resp++;-->
-<!--                coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);-->
-<!--                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;-->
-<!--                new google.maps.Marker({-->
-<!--                    icon: {-->
-<!--                        path: google.maps.SymbolPath.CIRCLE,-->
-<!--                        scale: 3,-->
-<!--                        fillColor: "#F00",-->
-<!--                        fillOpacity: 0.4,-->
-<!--                        strokeWeight: 0.4-->
-<!--                    },-->
-<!--                    position: {-->
-<!--                        lat: p.coords.latitude,-->
-<!--                        lng: p.coords.longitude-->
-<!--                    }, map-->
-<!--                });-->
-<!--            }, (e) => {-->
-<!--                errs++;-->
-<!--                console.log('getCurrentPosition error', e);-->
-<!--            }, {-->
-<!--                enableHighAccuracy: true,-->
-<!--                maximumAge: 0,-->
-<!--                //maximumAge: old ? Infinity : 0-->
-<!--            });-->
-<!--        }-->
-<!--    </script>-->
+        function watchMyLocation() {
+            navigator.geolocation.watchPosition((p) => {
+                console.log('getCurrentPosition', p);
+                resp++;
+                coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
+                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
+                var layer = new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        features: [
+                            new ol.Feature({
+                                geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
+                            })
+                        ]
+                    })
+                });
+                map.addLayer(layer);
+            }, (e) => {
+                errs++;
+                console.log('getCurrentPosition error', e);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 5,
+                //maximumAge: old ? Infinity : 0
+            });
+        }
+    </script>
 </head>
 <body>
 <button onclick="watchMyLocation()">Watch my location</button>
@@ -72,7 +52,7 @@
 <script type="text/javascript">
     //const rusov = {lat: 50.3880789, lng: 30.6269396};
     const rusov = [30.6269396, 50.3880789];
-    var map = new ol.Map({
+    map = new ol.Map({
         target: 'map',
         layers: [
             new ol.layer.Tile({
