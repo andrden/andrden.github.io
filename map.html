@@ -26,6 +26,7 @@
                 resp++;
                 if (resp % 20 === 0) {
                     let utterance = new SpeechSynthesisUtterance("" + resp);
+                    utterance.volume = 1;
                     speechSynthesis.speak(utterance);
                 }
                 coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
