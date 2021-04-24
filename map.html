@@ -8,8 +8,45 @@
           href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
           type="text/css">
     <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .box {
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+        }
+
+        .box .row {
+            border: 1px dotted grey;
+        }
+
+        .box .row.header {
+            margin-left: auto;
+            margin-right: 0;
+            z-index: 1;
+            flex: 0 1 auto;
+            /* The above is shorthand for:
+            flex-grow: 0,
+            flex-shrink: 1,
+            flex-basis: auto
+            */
+        }
+
+        .box .row.content {
+            position: fixed;
+            flex: 1 1 auto;
+        }
+
+        /*.box .row.footer {*/
+        /*    flex: 0 1 40px;*/
+        /*}*/
         .map {
-            height: 400px;
+            /* height: 400 px; */
+            height: 100%;
             width: 100%;
         }
     </style>
@@ -59,9 +96,13 @@
     </script>
 </head>
 <body>
-<button onclick="watchMyLocation()">Watch my location</button>
-<h3 id="txt">My openlayers Maps - talking</h3>
-<div id="map" class="map"></div>
+<div class="box">
+    <div class="row header">
+        <button onclick="watchMyLocation()">Watch my location</button>
+        <h3 id="txt">My openlayers Maps - talking</h3>
+    </div>
+    <div id="map" class="row content map"></div>
+</div>
 <script type="text/javascript">
     //const rusov = {lat: 50.3880789, lng: 30.6269396};
     const rusov = [30.6269396, 50.3880789];
@@ -74,7 +115,7 @@
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat(rusov),
-            zoom: 18
+            zoom: 17
         })
     });
 </script>
