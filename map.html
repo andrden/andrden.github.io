@@ -6,6 +6,7 @@
     <title>Quest</title>
     <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
           type="text/css">
@@ -26,6 +27,64 @@
         };
         firebase.initializeApp(firebaseConfig);
 
+        let map;
+        let resp = 0;
+        let errs = 0;
+        const coordsSet = new Set();
+        let feature;
+        let otherFeatures = new Map();
+        let lastCoordsAsString = '';
+
+        function watchMyLocation() {
+            navigator.geolocation.watchPosition((p) => {
+                console.log('getCurrentPosition', p);
+                resp++;
+                if (resp % 20 === 0) {
+                    let utterance = new SpeechSynthesisUtterance("" + resp);
+                    utterance.volume = 1;
+                    speechSynthesis.speak(utterance);
+                }
+                let coordsAsString = `lat=${p.coords.latitude} lng=${p.coords.longitude}`;
+                if (lastCoordsAsString !== coordsAsString) {
+                    writeToDatabase(p.coords);
+                    lastCoordsAsString = coordsAsString;
+                }
+                coordsSet.add(coordsAsString);
+                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
+                if (!feature) {
+                    feature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 30));
+                    feature.setStyle(new ol.style.Style({
+                        stroke: new ol.style.Stroke({color: '#000'}),
+                        // fill: new ol.style.Fill({
+                        //     color: [150, 150, 255, 1]
+                        // })
+                    }));
+                    // feature = new ol.Feature({
+                    //     geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
+                    // });
+                    var layer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: [feature]
+                        })
+                    });
+                    map.addLayer(layer);
+                } else {
+                    //feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude])));
+                    feature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 30));
+                }
+                map.getView().setCenter(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]));
+                //setTimeout(() => feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]))), 2000);
+                //setTimeout(() => feature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]),20)), 2000);
+            }, (e) => {
+                errs++;
+                console.log('getCurrentPosition error', e);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 5,
+                //maximumAge: old ? Infinity : 0
+            });
+        }
+
         function writeToDatabase(coords) {
             let newVar = {
                 //...coords, - this doesn't work strangely
@@ -43,7 +102,26 @@
 
         function readFromDatabaseOn() {
             firebase.database().ref("quest").on("value", (snapshot) => {
-                console.log("snapshot", Object.keys(snapshot.val()).length, snapshot.val());
+                let val = snapshot.val();
+                console.log("snapshot", Object.keys(val).length, val);
+                for (let key of Object.keys(val)) {
+                    //if (key === deviceId) continue;
+                    let coords = val[key];
+                    if (!otherFeatures.has(key)) {
+                        let otherFeature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat([coords.longitude, coords.latitude]), 15));
+                        otherFeature.setStyle(new ol.style.Style({
+                            stroke: new ol.style.Stroke({color: '#000'}),
+                            fill: new ol.style.Fill({color: [255, 0, 0, 1]})
+                        }));
+                        var layer = new ol.layer.Vector({source: new ol.source.Vector({features: [otherFeature]})});
+                        map.addLayer(layer);
+                        otherFeatures.set(key, otherFeature)
+                    } else {
+                        let otherFeature = otherFeatures.get(key);
+                        otherFeature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat([coords.longitude, coords.latitude]), 15));
+                    }
+
+                }
             });
         }
 
@@ -92,65 +170,6 @@
             width: 100%;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-    <script>
-        let map;
-        let resp = 0;
-        let errs = 0;
-        const coordsSet = new Set();
-        let feature;
-        let lastCoordsAsString = '';
-
-        function watchMyLocation() {
-            navigator.geolocation.watchPosition((p) => {
-                console.log('getCurrentPosition', p);
-                resp++;
-                if (resp % 20 === 0) {
-                    let utterance = new SpeechSynthesisUtterance("" + resp);
-                    utterance.volume = 1;
-                    speechSynthesis.speak(utterance);
-                }
-                let coordsAsString = `lat=${p.coords.latitude} lng=${p.coords.longitude}`;
-                if (lastCoordsAsString !== coordsAsString) {
-                    writeToDatabase(p.coords);
-                    lastCoordsAsString = coordsAsString;
-                }
-                coordsSet.add(coordsAsString);
-                document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
-                if (!feature) {
-                    feature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 30));
-                    feature.setStyle(new ol.style.Style({
-                        stroke: new ol.style.Stroke({color: '#000'}),
-                        fill: new ol.style.Fill({
-                            color: [150, 150, 255, 1]
-                        })
-                    }));
-                    // feature = new ol.Feature({
-                    //     geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
-                    // });
-                    var layer = new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            features: [feature]
-                        })
-                    });
-                    map.addLayer(layer);
-                } else {
-                    //feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude])));
-                    feature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 30));
-                }
-                map.getView().setCenter(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]));
-                //setTimeout(() => feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]))), 2000);
-                //setTimeout(() => feature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]),20)), 2000);
-            }, (e) => {
-                errs++;
-                console.log('getCurrentPosition error', e);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge: 5,
-                //maximumAge: old ? Infinity : 0
-            });
-        }
-    </script>
 </head>
 <body>
 <div class="box">
