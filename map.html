@@ -19,6 +19,7 @@
         let resp = 0;
         let errs = 0;
         const coordsSet = new Set();
+        let feature;
 
         function watchMyLocation() {
             navigator.geolocation.watchPosition((p) => {
@@ -31,16 +32,21 @@
                 }
                 coordsSet.add(`lat=${p.coords.latitude} lng=${p.coords.longitude}`);
                 document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
-                var layer = new ol.layer.Vector({
-                    source: new ol.source.Vector({
-                        features: [
-                            new ol.Feature({
-                                geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
-                            })
-                        ]
-                    })
-                });
-                map.addLayer(layer);
+                if (!feature) {
+                    feature = new ol.Feature({
+                        geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
+                    });
+                    var layer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: [feature]
+                        })
+                    });
+                    map.addLayer(layer);
+                } else {
+                    feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude])));
+                }
+                map.getView().setCenter(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]));
+                //setTimeout(() => feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]))), 2000);
             }, (e) => {
                 errs++;
                 console.log('getCurrentPosition error', e);
