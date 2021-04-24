@@ -118,9 +118,16 @@
                 coordsSet.add(coordsAsString);
                 document.getElementById('txt').innerText = `responses=${resp} unique=${coordsSet.size} errs=${errs}`;
                 if (!feature) {
-                    feature = new ol.Feature({
-                        geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
-                    });
+                    feature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 50));
+                    feature.setStyle(new ol.style.Style({
+                        stroke: new ol.style.Stroke({color: '#000'}),
+                        fill: new ol.style.Fill({
+                            color: [150, 150, 255, 1]
+                        })
+                    }));
+                    // feature = new ol.Feature({
+                    //     geometry: new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]))
+                    // });
                     var layer = new ol.layer.Vector({
                         source: new ol.source.Vector({
                             features: [feature]
@@ -128,7 +135,8 @@
                     });
                     map.addLayer(layer);
                 } else {
-                    feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude])));
+                    //feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude])));
+                    feature.setGeometry(new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]), 50)));
                 }
                 map.getView().setCenter(ol.proj.fromLonLat([p.coords.longitude, p.coords.latitude]));
                 //setTimeout(() => feature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([p.coords.longitude + 0.001, p.coords.latitude]))), 2000);
