@@ -45,7 +45,7 @@
 
         function display() {
             //document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} errs=${errs}`;
-            document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent} `;
+            document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent}`;
         }
 
         function watchMyLocation(button) {
@@ -235,7 +235,7 @@
 <div class="box">
     <div class="row header">
         <button onclick="watchMyLocation(this)">Watch my location</button>
-        <h3 id="txt">My openlayers Maps - talking</h3>
+        <h3 id="txt" style="margin-right: 10pt">My openlayers Maps - talking</h3>
     </div>
     <div id="map" class="row content map"></div>
 </div>
