@@ -4,13 +4,18 @@
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <title>Quest</title>
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
           type="text/css">
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+    <!--    <script type="module" src="./NoSleep.js"></script>-->
+    <script src="./NoSleep.min.js"></script>
     <script>
+        //import {NoSleep} from './NoSleep.js';
+        var noSleep = new NoSleep();
+        console.log(noSleep);
         let deviceId = localStorage.getItem("deviceId");
         if (!deviceId) {
             deviceId = Math.round(100000 * Math.random()).toString();
@@ -40,10 +45,12 @@
 
         function display() {
             //document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} errs=${errs}`;
-            document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent}`;
+            document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent} `;
         }
 
-        function watchMyLocation() {
+        function watchMyLocation(button) {
+            button.disabled = true;
+            noSleep.enable(); // https://github.com/richtr/NoSleep.js/blob/master/example/index.html
             navigator.geolocation.watchPosition((p) => {
                 console.log('getCurrentPosition', p);
                 resp++;
@@ -147,18 +154,20 @@
                             playerDistances.push(10 * Math.round(100 * getDistanceFromLatLonInKm(coords.latitude, coords.longitude, lastCoords.latitude, lastCoords.longitude)))
                         }
                     }
-                    if (!dbFeatures.has(key)) {
-                        let otherFeature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
-                        otherFeature.setStyle(new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: '#000'}),
-                            fill: new ol.style.Fill({color: [255, 0, 0, 1]})
-                        }));
-                        var layer = new ol.layer.Vector({source: new ol.source.Vector({features: [otherFeature]})});
-                        map.addLayer(layer);
-                        dbFeatures.set(key, otherFeature)
-                    } else {
-                        let otherFeature = dbFeatures.get(key);
-                        otherFeature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
+                    if (map) { // if map already initialized
+                        if (!dbFeatures.has(key)) {
+                            let otherFeature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
+                            otherFeature.setStyle(new ol.style.Style({
+                                stroke: new ol.style.Stroke({color: '#000'}),
+                                fill: new ol.style.Fill({color: key === deviceId ? [0, 0, 255, 1] : [255, 0, 0, 1]})
+                            }));
+                            var layer = new ol.layer.Vector({source: new ol.source.Vector({features: [otherFeature]})});
+                            map.addLayer(layer);
+                            dbFeatures.set(key, otherFeature)
+                        } else {
+                            let otherFeature = dbFeatures.get(key);
+                            otherFeature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
+                        }
                     }
                 }
                 playersRecent = players;
@@ -225,7 +234,7 @@
 <body>
 <div class="box">
     <div class="row header">
-        <button onclick="watchMyLocation()">Watch my location</button>
+        <button onclick="watchMyLocation(this)">Watch my location</button>
         <h3 id="txt">My openlayers Maps - talking</h3>
     </div>
     <div id="map" class="row content map"></div>
