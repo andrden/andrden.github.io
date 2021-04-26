@@ -54,11 +54,6 @@
             navigator.geolocation.watchPosition((p) => {
                 console.log('getCurrentPosition', p);
                 resp++;
-                // if (resp % 20 === 0) {
-                //     let utterance = new SpeechSynthesisUtterance("" + resp);
-                //     utterance.volume = 1;
-                //     speechSynthesis.speak(utterance);
-                // }
                 lastCoords = p.coords;
                 let coordsAsString = `lat=${p.coords.latitude} lng=${p.coords.longitude}`;
                 if (lastCoordsAsString !== coordsAsString) {
@@ -144,6 +139,7 @@
                     //if (key === deviceId) continue;
                     let coords = val[key];
                     let lonLat = [coords.longitude, coords.latitude];
+                    const SECOND_MS = 1_000;
                     const MINUTE_MS = 60_000;
                     if (coords.t < Date.now() - 10 * MINUTE_MS) {
                         // stale
@@ -157,10 +153,6 @@
                     if (map) { // if map already initialized
                         if (!dbFeatures.has(key)) {
                             let otherFeature = new ol.Feature(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
-                            otherFeature.setStyle(new ol.style.Style({
-                                stroke: new ol.style.Stroke({color: '#000'}),
-                                fill: new ol.style.Fill({color: key === deviceId ? [0, 0, 255, 1] : [255, 0, 0, 1]})
-                            }));
                             var layer = new ol.layer.Vector({source: new ol.source.Vector({features: [otherFeature]})});
                             map.addLayer(layer);
                             dbFeatures.set(key, otherFeature)
@@ -168,6 +160,27 @@
                             let otherFeature = dbFeatures.get(key);
                             otherFeature.setGeometry(new ol.geom.Circle(ol.proj.fromLonLat(lonLat), 15));
                         }
+                        let otherFeature = dbFeatures.get(key);
+                        let styleObj = {
+                            stroke: new ol.style.Stroke({color: '#000'}),
+                            fill: new ol.style.Fill({color: key === deviceId ? [0, 0, 255, 1] : [255, 0, 0, 1]}),
+                        };
+                        let secondsStale = Math.round((Date.now() - coords.t) / SECOND_MS / 10) * 10;
+                        if (secondsStale > 30) {
+                            // stale - phone locked? player cheating?
+                            styleObj.text = new ol.style.Text({
+                                text: secondsStale + " sec",
+                                scale: 1.2,
+                                fill: new ol.style.Fill({
+                                    color: "#f00"
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: "0",
+                                    width: 3
+                                })
+                            });
+                        }
+                        otherFeature.setStyle(new ol.style.Style(styleObj));
                     }
                 }
                 playersRecent = players;
