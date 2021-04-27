@@ -34,12 +34,13 @@ function display() {
     document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent}`;
 }
 
-function watchMyLocation(button) {
+async function watchMyLocation(button) {
     button.disabled = true;
     //noSleep.enable(); // https://github.com/richtr/NoSleep.js/blob/master/example/index.html
-    requestWakeLock();
+    await requestWakeLock();
     navigator.geolocation.watchPosition((p) => {
         console.log('getCurrentPosition', p);
+        button.innerText = 'wakeLock.rel=' + wakeLock?.released
         resp++;
         lastCoords = p.coords;
         let coordsAsString = `lat=${p.coords.latitude} lng=${p.coords.longitude}`;
