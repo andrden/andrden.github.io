@@ -34,10 +34,14 @@ function display() {
     document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent}`;
 }
 
+async function keepScreenOn(button) {
+    button.disabled = true;
+    await requestWakeLock();
+}
+
 async function watchMyLocation(button) {
     button.disabled = true;
     //noSleep.enable(); // https://github.com/richtr/NoSleep.js/blob/master/example/index.html
-    await requestWakeLock();
     navigator.geolocation.watchPosition((p) => {
         console.log('getCurrentPosition', p);
         button.innerText = 'wakeLock.rel=' + wakeLock?.released
@@ -208,6 +212,7 @@ const requestWakeLock = async () => {
     } catch (err) {
         // if wake lock request fails - usually system related, such as battery
         // wakeButton.dataset.status = 'off';
+        alert(`Error: ${err}`);
     }
 }
 
