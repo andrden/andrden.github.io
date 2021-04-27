@@ -37,6 +37,7 @@ function display() {
 function watchMyLocation(button) {
     button.disabled = true;
     //noSleep.enable(); // https://github.com/richtr/NoSleep.js/blob/master/example/index.html
+    requestWakeLock();
     navigator.geolocation.watchPosition((p) => {
         console.log('getCurrentPosition', p);
         resp++;
