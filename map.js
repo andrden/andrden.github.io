@@ -31,7 +31,8 @@ let lastPlayerDistances = [];
 
 function display() {
     //document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} errs=${errs}`;
-    document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent}`;
+    const sp = window.speechSynthesis ? 'sp+' : 'sp-';
+    document.getElementById('txt').innerText = `pos=${resp} unique=${coordsSet.size} db#=${dbFeatures.size} pl#=${playersRecent} ${sp}`;
 }
 
 async function keepScreenOn(button) {
@@ -112,6 +113,7 @@ function writeToDatabase(coords) {
         t: Date.now(),
         tStr: new Date().toISOString(),
         ua: navigator.userAgent,
+        sp: !!window.speechSynthesis,
     };
     for (let key in coords) {
         if (typeof (coords[key]) === 'number') {
@@ -182,8 +184,8 @@ function readFromDatabaseOn() {
 }
 
 function speak() {
-    console.log("speak", lastPlayerDistances)
-    if (lastPlayerDistances.length > 0) {
+    console.log("speak", window.speechSynthesis, lastPlayerDistances)
+    if (window.speechSynthesis && lastPlayerDistances.length > 0) { // no supported on Huawei
         let utterance = new SpeechSynthesisUtterance(lastPlayerDistances.join(' and ') + " meters");
         utterance.volume = 1;
         speechSynthesis.speak(utterance);
